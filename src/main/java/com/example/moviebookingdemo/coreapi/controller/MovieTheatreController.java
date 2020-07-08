@@ -1,16 +1,13 @@
-package com.example.moviebookingdemo.controller;
+package com.example.moviebookingdemo.coreapi.controller;
 
 import com.example.moviebookingdemo.command.commands.*;
-import com.example.moviebookingdemo.command.events.MovieBookedEvent;
 import com.example.moviebookingdemo.coreapi.dto.BookingDTO;
 import com.example.moviebookingdemo.coreapi.dto.MovieTheatreDTO;
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.axonframework.eventhandling.gateway.EventGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/movie-theatre")
@@ -25,9 +22,10 @@ public class MovieTheatreController {
 
     @PostMapping
     public void createMovieTheatre(@RequestBody MovieTheatreDTO movieTheatreDTO){
+        String movieTheatreId = UUID.randomUUID().toString();
         commandGateway.send(
                 CreateMovieTheatreCommand.builder()
-                        .id(UUID.randomUUID().toString())
+                        .id(movieTheatreId)
                         .name(movieTheatreDTO.getName())
                         .numOfSeats(movieTheatreDTO.getNumOfSeats())
                         .movies(movieTheatreDTO.getMovies())
@@ -57,8 +55,7 @@ public class MovieTheatreController {
     public void book(@RequestBody BookingDTO bookingDTO){
         String bookingId = UUID.randomUUID().toString();
 
-        CompletableFuture<Object> future =
-                commandGateway.send(
+        commandGateway.send(
                 BookMovieCommand.builder()
                             .id(bookingId)
                             .userId(bookingDTO.getUserId())
@@ -67,20 +64,6 @@ public class MovieTheatreController {
                             .movieSlot(bookingDTO.getMovieSlot())
                             .numberOfSeats(bookingDTO.getNumOfSeatsBooked())
                             .build()
-        );
-
-        future.thenAcceptAsync(o ->
-
-            commandGateway.send(
-                    CreateTicketCommand.builder()
-                            .id(UUID.randomUUID().toString())
-                            .userId(bookingDTO.getUserId())
-                            .movieTheatreId(bookingDTO.getMovieTheatreId())
-                            .movieName(bookingDTO.getMovieName())
-                            .movieSlot(bookingDTO.getMovieSlot())
-                            .numberOfSeats(bookingDTO.getNumOfSeatsBooked())
-                            .build()
-            )
         );
     }
 

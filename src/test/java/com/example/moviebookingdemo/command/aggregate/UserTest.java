@@ -1,11 +1,8 @@
 package com.example.moviebookingdemo.command.aggregate;
 
-import com.example.moviebookingdemo.command.commands.BookMovieCommand;
-import com.example.moviebookingdemo.command.commands.CreateTicketCommand;
+
 import com.example.moviebookingdemo.command.commands.CreateUserCommand;
-import com.example.moviebookingdemo.command.events.MovieBookedEvent;
 import com.example.moviebookingdemo.command.events.UserCreatedEvent;
-import com.example.moviebookingdemo.coreapi.CommonUtils;
 import com.example.moviebookingdemo.coreapi.MovieSlot;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
@@ -15,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserTest {
     private FixtureConfiguration<User> fixture;
@@ -55,30 +51,6 @@ public class UserTest {
                 .when(createUserCommand)
                 .expectSuccessfulHandlerExecution()
                 .expectEvents(userCreatedEvent);
-
-    }
-
-    @Test
-    public void testBookMovieCommand(){
-        String movieName = CommonUtils.selectFirstMovie(defaultMovies);
-        String bookingId = UUID.randomUUID().toString();
-        String movieTheatreId = UUID.randomUUID().toString();
-        int numOfTickets = 1;
-
-
-         CreateTicketCommand createTicketCommand = CreateTicketCommand.builder()
-                .id(bookingId)
-                .userId(aggregateId)
-                .movieTheatreId(movieTheatreId)
-                .movieName(movieName)
-                .movieSlot(defaultMovies.get(movieName))
-                .numberOfSeats(numOfTickets)
-                .build();
-
-        fixture.givenCommands(createUserCommand)
-                .when(createTicketCommand)
-                .expectSuccessfulHandlerExecution()
-                .expectState(state -> assertEquals(state.getTickets().size(),numOfTickets));
 
     }
 
