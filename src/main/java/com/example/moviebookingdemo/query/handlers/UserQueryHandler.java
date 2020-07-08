@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,17 +35,4 @@ public class UserQueryHandler {
         TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
         return ticketDTO;
     }
-
-//    https://stackoverflow.com/questions/15084670/how-to-get-the-class-of-type-variable-in-java-generics
-//    private <T,K> K convertToDto(T t) {
-//        ParameterizedType parameterizedType = (ParameterizedType) getClass()
-//                .getGenericSuperclass();
-//
-//        @SuppressWarnings("unchecked")
-//        Class<K> Kclazz = (Class<K>) parameterizedType.getActualTypeArguments()[0];
-//
-//        K k = modelMapper.map(t, Kclazz);
-//
-//        return k;
-//    }
 }

@@ -4,15 +4,20 @@ import com.example.moviebookingdemo.command.aggregate.entity.Ticket;
 import com.example.moviebookingdemo.command.events.MovieBookedEvent;
 import com.example.moviebookingdemo.coreapi.exception.InvalidOperationException;
 import org.axonframework.eventhandling.EventHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.example.moviebookingdemo.coreapi.Constants.INVALID_TICKET_STATE_ALREADY_EXISTS;
+import static com.example.moviebookingdemo.coreapi.Constants.INVALID_USER;
 
 @Service
 public class TicketService {
+
+    @Autowired
+    UserService userService;
 
     private final Map<String, List<Ticket>> userTickets = new HashMap<>();
 
@@ -25,8 +30,10 @@ public class TicketService {
 
         String userId = event.getUserId();
 
-        List<Ticket> tickets = userTickets.get(userId);
-        if(null==tickets) tickets = new ArrayList<>();
+        if(!userService.doesUserExists(userId)) throw new InvalidOperationException(INVALID_USER);
+
+        List<Ticket> userTickets = this.userTickets.get(userId);
+        if(null==userTickets) userTickets = new ArrayList<>();
 
         Ticket ticket = Ticket.builder()
                 .id(event.getId())
@@ -38,9 +45,9 @@ public class TicketService {
                 .date(LocalDateTime.now().withSecond(0).withNano(0))
                 .build();
 
-        if(tickets.contains(ticket)) throw  new InvalidOperationException(INVALID_TICKET_STATE_ALREADY_EXISTS);
+        if(userTickets.contains(ticket)) throw  new InvalidOperationException(INVALID_TICKET_STATE_ALREADY_EXISTS);
 
-        tickets.add(ticket);
-        userTickets.put(userId,tickets);
+        userTickets.add(ticket);
+        this.userTickets.put(userId,userTickets);
     }
 }

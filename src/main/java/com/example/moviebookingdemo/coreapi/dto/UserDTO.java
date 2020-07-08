@@ -1,11 +1,10 @@
 package com.example.moviebookingdemo.coreapi.dto;
 
-import com.example.moviebookingdemo.command.aggregate.entity.Ticket;
+import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
+@Builder
 public class UserDTO {
 
     private String id;
@@ -16,5 +15,4 @@ public class UserDTO {
 
     private boolean isAdmin;
 
-    List<Ticket> tickets;
 }

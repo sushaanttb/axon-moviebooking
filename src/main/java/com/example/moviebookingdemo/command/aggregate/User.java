@@ -23,8 +23,6 @@ public class User {
 
     private boolean isAdmin;
 
-
-
     @CommandHandler
     public User(CreateUserCommand command){
         AggregateLifecycle.apply(
