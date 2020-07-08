@@ -10,9 +10,11 @@ import com.example.moviebookingdemo.query.queries.CurrentlyScreenedMoviesQuery;
 import com.example.moviebookingdemo.query.service.MovieTheatreService;
 import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class MovieTheatreQueryHandler {
 
     @Autowired
