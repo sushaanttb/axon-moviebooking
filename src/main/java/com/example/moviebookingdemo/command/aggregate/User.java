@@ -27,7 +27,7 @@ import static com.example.moviebookingdemo.coreapi.Constants.INVALID_USER;
 @Aggregate
 public class User {
 
-    @AggregateIdentifier(routingKey = "userId")
+    @AggregateIdentifier
     private String id;
 
     private String name;
@@ -63,7 +63,7 @@ public class User {
     }
 
 
-    @CommandHandler(routingKey = "userId")
+    @CommandHandler
     public void handle(CreateTicketCommand command){
         AggregateLifecycle.apply(
                 TicketCreatedEvent.builder()

@@ -9,10 +9,10 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Builder
 public class CreateTicketCommand {
 
-    String id;
-
     @TargetAggregateIdentifier
     String userId;
+
+    String id;
 
     String movieTheatreId;
 
