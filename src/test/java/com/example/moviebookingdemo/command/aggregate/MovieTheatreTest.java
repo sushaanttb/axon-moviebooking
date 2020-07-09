@@ -1,6 +1,5 @@
 package com.example.moviebookingdemo.command.aggregate;
 
-import com.example.moviebookingdemo.command.aggregate.MovieTheatre;
 import com.example.moviebookingdemo.command.commands.BookMovieCommand;
 import com.example.moviebookingdemo.command.commands.CreateMovieTheatreCommand;
 import com.example.moviebookingdemo.command.commands.DeleteMovieTheatreCommand;
@@ -10,7 +9,6 @@ import com.example.moviebookingdemo.command.events.MovieTheatreDeletedEvent;
 import com.example.moviebookingdemo.coreapi.CommonUtils;
 import com.example.moviebookingdemo.coreapi.Constants;
 import com.example.moviebookingdemo.coreapi.MovieSlot;
-import com.example.moviebookingdemo.coreapi.exception.InvalidOperationException;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +36,7 @@ public class MovieTheatreTest {
     CreateMovieTheatreCommand createMovieTheatreCommand = CreateMovieTheatreCommand.builder()
             .id(aggregateId)
             .name(DEFAULT_MOVIE_THEATRE_NAME)
-            .numOfSeats(default_no_of_seats)
+            .capacity(default_no_of_seats)
             .movies(defaultMovies)
             .build();
 
@@ -52,7 +50,7 @@ public class MovieTheatreTest {
         MovieTheatreCreatedEvent movieTheatreCreatedEvent = MovieTheatreCreatedEvent.builder()
                 .id(aggregateId)
                 .name(DEFAULT_MOVIE_THEATRE_NAME)
-                .numOfSeats(default_no_of_seats)
+                .capacity(default_no_of_seats)
                 .movies(defaultMovies)
                 .build();
 
@@ -69,7 +67,7 @@ public class MovieTheatreTest {
         UpdateMovieTheatreCommand updateMovieTheatreCommand = UpdateMovieTheatreCommand.builder()
                 .id(aggregateId)
                 .name(DEFAULT_MOVIE_THEATRE_NAME)
-                .numOfSeats(default_no_of_seats*2)
+                .capacity(default_no_of_seats*2)
                 .movies(defaultMovies)
                 .build();
 

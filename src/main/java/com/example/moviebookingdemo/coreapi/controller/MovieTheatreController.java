@@ -37,7 +37,7 @@ public class MovieTheatreController {
                 CreateMovieTheatreCommand.builder()
                         .id(movieTheatreId)
                         .name(movieTheatreDTO.getName())
-                        .numOfSeats(movieTheatreDTO.getCapacity())
+                        .capacity(movieTheatreDTO.getCapacity())
                         .movies(movieTheatreDTO.getMovies())
                         .build()
                 );
@@ -49,7 +49,7 @@ public class MovieTheatreController {
                 UpdateMovieTheatreCommand.builder()
                         .id(movieTheatreDTO.getId())
                         .name(movieTheatreDTO.getName())
-                        .numOfSeats(movieTheatreDTO.getCapacity())
+                        .capacity(movieTheatreDTO.getCapacity())
                         .movies(movieTheatreDTO.getMovies())
                         .build()
         );

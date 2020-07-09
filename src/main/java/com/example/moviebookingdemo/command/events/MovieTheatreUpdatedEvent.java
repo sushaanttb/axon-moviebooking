@@ -14,7 +14,7 @@ public class MovieTheatreUpdatedEvent {
 
     private String name;
 
-    private int numOfSeats;
+    private int capacity;
 
     Map<String, MovieSlot> movies;
 }

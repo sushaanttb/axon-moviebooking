@@ -16,7 +16,7 @@ public class CreateMovieTheatreCommand {
 
     private String name;
 
-    private int numOfSeats;
+    private int capacity;
 
     //<movieName,timings>
     Map<String, MovieSlot> movies;

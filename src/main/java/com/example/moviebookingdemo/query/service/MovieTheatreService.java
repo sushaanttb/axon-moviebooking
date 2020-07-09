@@ -43,7 +43,7 @@ public class MovieTheatreService {
                         .builder()
                         .id(movieTheatreId)
                         .name(event.getName())
-                        .capacity(event.getNumOfSeats())
+                        .capacity(event.getCapacity())
                         .currentMovie(CommonUtils.selectRandomMovie(movies))
                         .movies(movies)
                         .bookings(new HashMap<>())
@@ -60,6 +60,7 @@ public class MovieTheatreService {
         if(null == existingMovieTheatreDTO) throw new InvalidOperationException(INVALID_MOVIE_THEATRE);
 
         existingMovieTheatreDTO.setName(event.getName());
+        existingMovieTheatreDTO.setCapacity(event.getCapacity());
         existingMovieTheatreDTO.setCurrentMovie(CommonUtils.selectRandomMovie(movies));
         existingMovieTheatreDTO.setMovies(movies);
 
@@ -73,35 +74,25 @@ public class MovieTheatreService {
         availableMovieTheatres.remove(movieTheatreId);
     }
 
+
+    //This event is generated from MovieTheatreAggregate post handling the basic validations
     @EventHandler
     public void on(BookMovieEvent event) throws InvalidOperationException{
         String movieTheatreId = event.getMovieTheatreId();
 
-
         MovieTheatreDTO movieTheatreDTO = availableMovieTheatres.get(movieTheatreId);
+
+        //Basic MovieTheatre Booking Validations(based on bookings)
         if(null == movieTheatreDTO) throw new InvalidOperationException(INVALID_MOVIE_THEATRE);
 
-        int capacity = movieTheatreDTO.getCapacity();
-        Map<String,MovieSlot> allMovies = movieTheatreDTO.getMovies();
         Map<String,List<Booking>> allMovieBookings = movieTheatreDTO.getBookings();
+        if(null==allMovieBookings) allMovieBookings = new HashMap<>();
 
-        if(allMovies.size()==0) throw new InvalidOperationException(EMPTY_MOVIE_THEATRE);
-
-        if(null==allMovies.get(event.getMovieName())) throw new InvalidOperationException(INVALID_MOVIE);
-
-        if(!allMovies.get(event.getMovieName()).equals(event.getMovieSlot())) throw new InvalidOperationException(INVALID_MOVIE_SLOT);
-
-        if(event.getNumberOfSeats()>capacity) throw new InvalidOperationException(INVALID_BOOKING_CNT_MAX);
-
-        if(event.getNumberOfSeats()>MAX_BOOKINGS_IN_TRANSACTION) throw new InvalidOperationException(INVALID_BOOKING_CNT_THRESHOLD);
-
-        //ToDo: use map's computeifAbsent Apis
-        List<Booking> currentMovieBookings = new ArrayList<>();
-
-        if(allMovieBookings.size()>0 && null!=allMovieBookings.get(event.getMovieName())) currentMovieBookings = allMovieBookings.get(event.getMovieName());
+        List<Booking> currentMovieBookings = allMovieBookings.get(event.getMovieName());
+        if(null!=currentMovieBookings) currentMovieBookings = new ArrayList<>();
 
         if(currentMovieBookings.size()>0){
-            int availableBookings = capacity-currentMovieBookings.size();
+            int availableBookings = movieTheatreDTO.getCapacity()-currentMovieBookings.size();
 
             if(availableBookings < event.getNumberOfSeats()) throw new InvalidOperationException(INVALID_BOOKING_CNT_NOT_ENOUGH_AVAIL);
         }
@@ -119,9 +110,7 @@ public class MovieTheatreService {
         if(currentMovieBookings.contains(booking)) throw new InvalidOperationException(INVALID_BOOKING_STATE_ALREADY_EXISTS);
 
         currentMovieBookings.add(booking);
-
         allMovieBookings.put(event.getMovieName(), currentMovieBookings);
-
         movieTheatreDTO.setBookings(allMovieBookings);
         availableMovieTheatres.put(movieTheatreId,movieTheatreDTO);
 
@@ -137,13 +126,6 @@ public class MovieTheatreService {
     }
 
 
-    public List<MovieTheatreDTO> getAllMovieTheatres(){
-         return new ArrayList<>(availableMovieTheatres.values());
-    }
-
-    public List<MovieTheatreDTO> getAllAvailableMovieSlots(){
-        return new ArrayList<>(availableMovieTheatres.values());
-    }
 
     public List<CurrentlyScreenedMovieDTO> getAllCurrentlyScreenedMovies(){
 
@@ -151,6 +133,14 @@ public class MovieTheatreService {
                 .stream()
                 .map(mt -> modelMapper.map(mt, CurrentlyScreenedMovieDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    public List<MovieTheatreDTO> getAllMovieTheatres(){
+         return new ArrayList<>(availableMovieTheatres.values());
+    }
+
+    public List<MovieTheatreDTO> getAllAvailableMovieSlots(){
+        return new ArrayList<>(availableMovieTheatres.values());
     }
 
 
