@@ -4,6 +4,7 @@ import com.example.moviebookingdemo.command.aggregate.entity.Booking;
 import com.example.moviebookingdemo.command.events.*;
 import com.example.moviebookingdemo.coreapi.CommonUtils;
 import com.example.moviebookingdemo.coreapi.MovieSlot;
+import com.example.moviebookingdemo.coreapi.dto.BookingDTO;
 import com.example.moviebookingdemo.coreapi.dto.MovieTheatreDTO;
 import com.example.moviebookingdemo.coreapi.exception.InvalidOperationException;
 import com.example.moviebookingdemo.query.projections.CurrentlyScreenedMovieDTO;
@@ -25,6 +26,11 @@ import static com.example.moviebookingdemo.coreapi.Constants.*;
 @Service
 public class MovieTheatreService {
 
+    /*
+        This is our in-memory MovieTheatreRepository
+        Also, avoiding dumping the aggregate object as not sure on the impact on the Lifecycle
+        hence saving in form of DTO
+    */
     private Map<String, MovieTheatreDTO> availableMovieTheatres = new HashMap<>();
 
     @Autowired
@@ -74,7 +80,6 @@ public class MovieTheatreService {
         availableMovieTheatres.remove(movieTheatreId);
     }
 
-
     //This event is generated from MovieTheatreAggregate post handling the basic validations
     @EventHandler
     public void on(BookMovieEvent event) throws InvalidOperationException{
@@ -85,10 +90,10 @@ public class MovieTheatreService {
         //Basic MovieTheatre Booking Validations(based on bookings)
         if(null == movieTheatreDTO) throw new InvalidOperationException(INVALID_MOVIE_THEATRE);
 
-        Map<String,List<Booking>> allMovieBookings = movieTheatreDTO.getBookings();
+        Map<String,List<BookingDTO>> allMovieBookings = movieTheatreDTO.getBookings();
         if(null==allMovieBookings) allMovieBookings = new HashMap<>();
 
-        List<Booking> currentMovieBookings = allMovieBookings.get(event.getMovieName());
+        List<BookingDTO> currentMovieBookings = allMovieBookings.get(event.getMovieName());
         if(null!=currentMovieBookings) currentMovieBookings = new ArrayList<>();
 
         if(currentMovieBookings.size()>0){
@@ -97,7 +102,7 @@ public class MovieTheatreService {
             if(availableBookings < event.getNumberOfSeats()) throw new InvalidOperationException(INVALID_BOOKING_CNT_NOT_ENOUGH_AVAIL);
         }
 
-        Booking booking  = Booking.builder()
+        BookingDTO bookingDTO  = BookingDTO.builder()
                                     .id(event.getId())
                                     .userId(event.getUserId())
                                     .movieTheatreId(movieTheatreId)
@@ -107,9 +112,9 @@ public class MovieTheatreService {
                                     .date(LocalDateTime.now().withSecond(0).withNano(0))  //<--   To avoid aggregate illegal state exception
                                 .build();
 
-        if(currentMovieBookings.contains(booking)) throw new InvalidOperationException(INVALID_BOOKING_STATE_ALREADY_EXISTS);
+        if(currentMovieBookings.contains(bookingDTO)) throw new InvalidOperationException(INVALID_BOOKING_STATE_ALREADY_EXISTS);
 
-        currentMovieBookings.add(booking);
+        currentMovieBookings.add(bookingDTO);
         allMovieBookings.put(event.getMovieName(), currentMovieBookings);
         movieTheatreDTO.setBookings(allMovieBookings);
         availableMovieTheatres.put(movieTheatreId,movieTheatreDTO);
@@ -126,7 +131,6 @@ public class MovieTheatreService {
     }
 
 
-
     public List<CurrentlyScreenedMovieDTO> getAllCurrentlyScreenedMovies(){
 
         return availableMovieTheatres.values()
@@ -136,12 +140,11 @@ public class MovieTheatreService {
     }
 
     public List<MovieTheatreDTO> getAllMovieTheatres(){
-         return new ArrayList<>(availableMovieTheatres.values());
+        return new ArrayList<>(availableMovieTheatres.values());
     }
 
     public List<MovieTheatreDTO> getAllAvailableMovieSlots(){
         return new ArrayList<>(availableMovieTheatres.values());
     }
-
 
 }

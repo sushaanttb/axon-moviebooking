@@ -22,6 +22,6 @@ public class MovieTheatreDTO {
 
     Map<String, MovieSlot> movies;
 
-    Map<String, List<Booking>> bookings;
+    Map<String, List<BookingDTO>> bookings;
 
 }

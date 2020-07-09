@@ -26,9 +26,6 @@ public class MovieTheatreController {
     @Autowired
     private QueryGateway queryGateway;
 
-//    Didn't worked as expected
-//    @Autowired
-//    private EventGateway eventGateway;
 
     @PostMapping
     public void createMovieTheatre(@RequestBody MovieTheatreDTO movieTheatreDTO){
