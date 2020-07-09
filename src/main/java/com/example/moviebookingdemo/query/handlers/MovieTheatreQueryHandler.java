@@ -1,7 +1,5 @@
 package com.example.moviebookingdemo.query.handlers;
 
-import com.example.moviebookingdemo.command.aggregate.MovieTheatre;
-import com.example.moviebookingdemo.coreapi.dto.MovieDTO;
 import com.example.moviebookingdemo.coreapi.dto.MovieTheatreDTO;
 import com.example.moviebookingdemo.query.projections.CurrentlyScreenedMovieDTO;
 import com.example.moviebookingdemo.query.queries.AllMovieTheatresQuery;
@@ -27,9 +25,8 @@ public class MovieTheatreQueryHandler {
 
     @QueryHandler
     public List<MovieTheatreDTO> getAvailableMovieSlots(AvailableMovieSlotsQuery availableMovieSlotsQuery){
-        return movieTheatreService.getAllMovieTheatres();
+        return movieTheatreService.getAllAvailableMovieSlots();
     }
-
 
     @QueryHandler
     public List<CurrentlyScreenedMovieDTO> getCurrentlyScreenedMovies(CurrentlyScreenedMoviesQuery currentlyScreenedMoviesQuery){
