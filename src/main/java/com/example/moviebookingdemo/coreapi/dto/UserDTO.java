@@ -3,6 +3,8 @@ package com.example.moviebookingdemo.coreapi.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class UserDTO {
@@ -14,5 +16,7 @@ public class UserDTO {
     private String address;
 
     private boolean isAdmin;
+
+    private List<TicketDTO> tickets;
 
 }
