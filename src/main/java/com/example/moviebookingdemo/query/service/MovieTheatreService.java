@@ -94,7 +94,7 @@ public class MovieTheatreService {
         if(null==allMovieBookings) allMovieBookings = new HashMap<>();
 
         List<BookingDTO> currentMovieBookings = allMovieBookings.get(event.getMovieName());
-        if(null!=currentMovieBookings) currentMovieBookings = new ArrayList<>();
+        if(null==currentMovieBookings) currentMovieBookings = new ArrayList<>();
 
         if(currentMovieBookings.size()>0){
             int availableBookings = movieTheatreDTO.getCapacity()-currentMovieBookings.size();
