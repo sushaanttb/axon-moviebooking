@@ -47,8 +47,6 @@ public class User {
 
 
     //required by axon
-    protected User(){
-
-    }
+    protected User(){}
 
 }
