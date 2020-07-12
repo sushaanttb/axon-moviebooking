@@ -15,7 +15,7 @@ public class BookMovieCommand {
 
     String id;
 
-    String userId;
+    String userName;
 
     String movieName;
 

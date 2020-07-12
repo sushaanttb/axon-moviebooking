@@ -12,7 +12,7 @@ public class TicketDTO {
 
     String id;
 
-    String userId;
+    String userName;
 
     String movieTheatreId;
 

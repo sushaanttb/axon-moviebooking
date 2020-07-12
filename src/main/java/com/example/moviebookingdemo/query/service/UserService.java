@@ -27,51 +27,58 @@ public class UserService {
     */
     private final Map<String,UserDTO> availableUsers = new HashMap<>();
 
-    public boolean doesUserExists(String userId){
-        return availableUsers.containsKey(userId);
+    public boolean doesUserExists(String userName){
+        return availableUsers.containsKey(userName);
     }
 
-    public boolean isAdmin(String userId){
-        UserDTO userDTO = getUser(userId);
+    public boolean isAdmin(String userName){
+        UserDTO userDTO = getUser(userName);
 
         if(userDTO!=null) return userDTO.isAdmin();
 
         return false;
     }
 
-    public UserDTO getUser(String userId){
-        return availableUsers.get(userId);
+    public UserDTO getUser(String userName){
+        return availableUsers.get(userName);
     }
 
-    public void updateUser(String userId,UserDTO userDTO){
-         availableUsers.put(userId,userDTO);
+    public void updateUser(String userName,UserDTO userDTO){
+         availableUsers.put(userName,userDTO);
     }
 
     public List<TicketDTO> getAllTickets(String userId){
         return getUser(userId).getTickets();
     }
 
+    public UserDTO login(String userName, String password ){
+        UserDTO existingUser = availableUsers.get(userName);
+
+        return ((null==existingUser) || (!password.equals(existingUser.getPassword())))
+                ?null : existingUser;
+    }
+
     @EventHandler
     public void on(UserCreatedEvent event){
-        availableUsers.put(event.getId(),
+        availableUsers.put(event.getUserName(),
                                     UserDTO.builder()
-                                            .id(event.getId())
-                                            .name(event.getName())
-                                            .address(event.getAddress())
-                                            .isAdmin(event.isAdmin())
-                                            .tickets(new ArrayList<>())
-                                            .build()
+                                        .userName(event.getUserName())
+                                        .address(event.getAddress())
+                                        .password(event.getPassword())
+                                        .isAdmin(event.isAdmin())
+                                        .tickets(new ArrayList<>())
+                                .build()
         );
     }
 
     @EventHandler
     private void on(MovieBookedEvent event) throws InvalidOperationException {
 
-        String userId = event.getUserId();
+        String userName = event.getUserName();
 
-        if(!doesUserExists(userId)) throw new InvalidOperationException(INVALID_USER);
+        if(!doesUserExists(userName)) throw new InvalidOperationException(INVALID_USER);
 
-        UserDTO userDTO = getUser(userId);
+        UserDTO userDTO = getUser(userName);
 
         List<TicketDTO> userTickets = userDTO.getTickets();
 
@@ -79,7 +86,7 @@ public class UserService {
 
         TicketDTO ticketDTO = TicketDTO.builder()
                 .id(event.getId())
-                .userId(event.getUserId())
+                .userName(event.getUserName())
                 .movieTheatreId(event.getMovieTheatreId())
                 .movieName(event.getMovieName())
                 .movieSlot(event.getMovieSlot())
@@ -92,7 +99,7 @@ public class UserService {
         userTickets.add(ticketDTO);
 
         userDTO.setTickets(userTickets);
-        updateUser(userId,userDTO);
+        updateUser(userName,userDTO);
     }
 
 }

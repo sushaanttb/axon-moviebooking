@@ -7,11 +7,12 @@ import lombok.Data;
 @Data
 @Builder
 public class BookMovieEvent {
+
     String movieTheatreId;
 
     private String id;
 
-    String userId;
+    String userName;
 
     String movieName;
 

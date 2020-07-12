@@ -104,7 +104,7 @@ public class MovieTheatreService {
 
         BookingDTO bookingDTO  = BookingDTO.builder()
                                     .id(event.getId())
-                                    .userId(event.getUserId())
+                                    .userName(event.getUserName())
                                     .movieTheatreId(movieTheatreId)
                                     .movieName(event.getMovieName())
                                     .movieSlot(event.getMovieSlot())
@@ -121,7 +121,7 @@ public class MovieTheatreService {
 
         eventGateway.publish(MovieBookedEvent.builder()
                                                 .id(event.getId())
-                                                .userId(event.getUserId())
+                                                .userName(event.getUserName())
                                                 .movieTheatreId(event.getMovieTheatreId())
                                                 .movieName(event.getMovieName())
                                                 .movieSlot(event.getMovieSlot())

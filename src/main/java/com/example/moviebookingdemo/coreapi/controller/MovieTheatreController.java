@@ -65,7 +65,7 @@ public class MovieTheatreController {
         commandGateway.send(
                 BookMovieCommand.builder()
                             .id(bookingId)
-                            .userId(bookingDTO.getUserId())
+                            .userName(bookingDTO.getUserName())
                             .movieTheatreId(bookingDTO.getMovieTheatreId())
                             .movieName(bookingDTO.getMovieName())
                             .movieSlot(bookingDTO.getMovieSlot())

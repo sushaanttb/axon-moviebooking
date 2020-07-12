@@ -10,41 +10,39 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 
+import java.util.UUID;
+
 @Data
 @Aggregate
 public class User {
 
     @AggregateIdentifier
-    private String id;
+    private String userName;
 
-    private String name;
-
+    private String password;
     private String address;
-
     private boolean isAdmin;
 
     @CommandHandler
     public User(CreateUserCommand command){
         AggregateLifecycle.apply(
                 UserCreatedEvent.builder()
-                        .id(command.getId())
-                        .name((command.getName()))
+                        .userName((command.getUserName()))
+                        .password(UUID.randomUUID().toString())
                         .address(command.getAddress())
                         .isAdmin(command.isAdmin())
-                        .build()
+                    .build()
 
         );
     }
 
     @EventSourcingHandler
     public void on(UserCreatedEvent event){
-        id = event.getId();
-
-        name = event.getName();
+        userName = event.getUserName();
         address = event.getAddress();
+        password = event.getPassword();
         isAdmin = event.isAdmin();
     }
-
 
     //required by axon
     protected User(){}

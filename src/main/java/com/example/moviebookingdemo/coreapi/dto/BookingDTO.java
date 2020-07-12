@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class BookingDTO {
     String id;
 
-    String userId;
+    String userName;
 
     String movieTheatreId;
 

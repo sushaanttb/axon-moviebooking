@@ -12,7 +12,7 @@ public class MovieBookedEvent {
 
     private String id;
 
-    String userId;
+    String userName;
 
     String movieName;
 

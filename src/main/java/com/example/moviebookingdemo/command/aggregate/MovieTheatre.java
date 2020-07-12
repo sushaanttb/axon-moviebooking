@@ -96,7 +96,7 @@ public class MovieTheatre {
         AggregateLifecycle.apply(
                 BookMovieEvent.builder()
                         .id(command.getId())
-                        .userId(command.getUserId())
+                        .userName(command.getUserName())
                         .movieTheatreId(command.getMovieTheatreId())
                         .movieName(command.getMovieName())
                         .movieSlot(command.getMovieSlot())

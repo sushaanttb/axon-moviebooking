@@ -95,12 +95,12 @@ public class MovieTheatreTest {
     public void testBookMovieCommand(){
         String movieName = CommonUtils.selectFirstMovie(defaultMovies);
         String bookingId = UUID.randomUUID().toString();
-        String userId = UUID.randomUUID().toString();
+        String userName = "defaultUserName";
         int numOfTickets = 1;
 
         BookMovieCommand bookMovieCommand = BookMovieCommand.builder()
                 .id(bookingId)
-                .userId(userId)
+                .userName(userName)
                 .movieTheatreId(aggregateId)
                 .movieName(movieName)
                 .movieSlot(defaultMovies.get(movieName))
@@ -119,12 +119,12 @@ public class MovieTheatreTest {
     public void testBookMovieCommand_WithBookingsGreaterThanThreshold(){
         String movieName = CommonUtils.selectFirstMovie(defaultMovies);
         String bookingId = UUID.randomUUID().toString();
-        String userId = UUID.randomUUID().toString();
+        String userName = "defaultUserName";
         int numOfTickets = Constants.MAX_BOOKINGS_IN_TRANSACTION+1;
 
         BookMovieCommand bookMovieCommand = BookMovieCommand.builder()
                 .id(bookingId)
-                .userId(userId)
+                .userName(userName)
                 .movieTheatreId(aggregateId)
                 .movieName(movieName)
                 .movieSlot(defaultMovies.get(movieName))
