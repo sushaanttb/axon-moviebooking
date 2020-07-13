@@ -35,12 +35,12 @@ public class UserController {
                 .build()
         );
 
-        if(null!=aggregateId)
-            return queryGateway.query(GetUserQuery.builder().userName(userDTO.getUserName()).build(),
+
+        return queryGateway.query(GetUserQuery.builder().userName(userDTO.getUserName()).build(),
                     ResponseTypes.instanceOf(UserDTO.class)
             ).join();
 
-        return null;
+
     }
 
     @GetMapping("/purchases")
