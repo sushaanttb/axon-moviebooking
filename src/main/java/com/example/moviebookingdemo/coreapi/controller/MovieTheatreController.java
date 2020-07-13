@@ -4,9 +4,7 @@ import com.example.moviebookingdemo.command.commands.*;
 import com.example.moviebookingdemo.coreapi.dto.BookingDTO;
 import com.example.moviebookingdemo.coreapi.dto.MovieTheatreDTO;
 import com.example.moviebookingdemo.query.projections.CurrentlyScreenedMovieDTO;
-import com.example.moviebookingdemo.query.queries.AllMovieTheatresQuery;
-import com.example.moviebookingdemo.query.queries.AvailableMovieSlotsQuery;
-import com.example.moviebookingdemo.query.queries.CurrentlyScreenedMoviesQuery;
+import com.example.moviebookingdemo.query.queries.*;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
@@ -14,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @CrossOrigin
@@ -60,10 +59,10 @@ public class MovieTheatreController {
 
 
     @PostMapping("/book")
-    public void book(@RequestBody BookingDTO bookingDTO){
+    public BookingDTO book(@RequestBody BookingDTO bookingDTO){
         String bookingId = UUID.randomUUID().toString();
 
-        commandGateway.send(
+        String responseAggregateId = commandGateway.sendAndWait(
                 BookMovieCommand.builder()
                             .id(bookingId)
                             .userName(bookingDTO.getUserName())
@@ -73,6 +72,17 @@ public class MovieTheatreController {
                             .numberOfSeats(bookingDTO.getNumOfSeatsBooked())
                             .build()
         );
+
+
+        return  queryGateway.query(
+                        GetBookingQuery.builder()
+                            .bookingId(bookingId)
+                            .movieName(bookingDTO.getMovieName())
+                            .movieTheatreId(bookingDTO.getMovieTheatreId())
+                        .build(),
+                        ResponseTypes.instanceOf(BookingDTO.class)
+                ).join();
+
     }
 
 
@@ -80,6 +90,14 @@ public class MovieTheatreController {
     public List<MovieTheatreDTO> getAllMovieTheatres(){
         return queryGateway.query(
                 AllMovieTheatresQuery.builder().build(),
+                ResponseTypes.multipleInstancesOf(MovieTheatreDTO.class)
+        ).join();
+    }
+
+    @GetMapping("/empty")
+    public List<MovieTheatreDTO> getAllEmptyMovieTheatres(){
+        return queryGateway.query(
+                AllEmptyMovieTheatreMoviesQuery.builder().build(),
                 ResponseTypes.multipleInstancesOf(MovieTheatreDTO.class)
         ).join();
     }

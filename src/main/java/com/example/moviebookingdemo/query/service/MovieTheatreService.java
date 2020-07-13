@@ -13,12 +13,10 @@ import org.axonframework.eventhandling.gateway.EventGateway;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.example.moviebookingdemo.coreapi.Constants.*;
@@ -50,8 +48,8 @@ public class MovieTheatreService {
                         .id(movieTheatreId)
                         .name(event.getName())
                         .capacity(event.getCapacity())
-                        .currentMovie(CommonUtils.selectRandomMovie(movies))
                         .movies(movies)
+                        .currentMovie(movies.size()==0? EMPTY_STRING : CommonUtils.selectRandomMovie(movies))
                         .bookings(new HashMap<>())
                         .build()
         );
@@ -67,9 +65,8 @@ public class MovieTheatreService {
 
         existingMovieTheatreDTO.setName(event.getName());
         existingMovieTheatreDTO.setCapacity(event.getCapacity());
-        existingMovieTheatreDTO.setCurrentMovie(CommonUtils.selectRandomMovie(movies));
         existingMovieTheatreDTO.setMovies(movies);
-
+        existingMovieTheatreDTO.setCurrentMovie(movies.size()==0? EMPTY_STRING :CommonUtils.selectRandomMovie(movies));
     }
 
     @EventHandler
@@ -126,6 +123,7 @@ public class MovieTheatreService {
                                                 .movieName(event.getMovieName())
                                                 .movieSlot(event.getMovieSlot())
                                                 .numberOfSeats(event.getNumberOfSeats())
+                                                .date(bookingDTO.getDate())
                                             .build()
         );
     }
@@ -143,8 +141,22 @@ public class MovieTheatreService {
         return new ArrayList<>(availableMovieTheatres.values());
     }
 
+    public List<MovieTheatreDTO> getAllEmptyMovieTheatres(){
+        return availableMovieTheatres.values().stream().filter(m->m.getMovies().size()==0).collect(Collectors.toList());
+    }
+
     public List<MovieTheatreDTO> getAllAvailableMovieSlots(){
         return new ArrayList<>(availableMovieTheatres.values());
+    }
+
+    public Optional<BookingDTO> getBooking(String movieTheatreId, String movieName, String bookingId){
+        return availableMovieTheatres.get(movieTheatreId)
+                .getBookings()
+                .get(movieName)
+                .stream()
+                .filter(bookingDTO -> bookingDTO.getId().equals(bookingId))
+                .findFirst();
+
     }
 
 }

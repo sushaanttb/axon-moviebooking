@@ -4,6 +4,8 @@ import com.example.moviebookingdemo.coreapi.MovieSlot;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Data
 public class MovieBookedEvent {
@@ -19,4 +21,6 @@ public class MovieBookedEvent {
     MovieSlot movieSlot;
 
     int numberOfSeats;
+
+    LocalDateTime date;
 }

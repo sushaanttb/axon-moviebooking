@@ -18,5 +18,5 @@ public class Constants {
     public static final String INVALID_USER = "User Doesn't exists!";
     public static final String INVALID_TICKET_STATE_ALREADY_EXISTS = "Ticket Already Exists!";
 
-
+    public static final String EMPTY_STRING = "";
 }
