@@ -91,7 +91,7 @@ public class UserService {
                 .movieName(event.getMovieName())
                 .movieSlot(event.getMovieSlot())
                 .numOfSeatsBooked(event.getNumberOfSeats())
-                .date(LocalDateTime.now().withSecond(0).withNano(0))
+                .date(event.getDate())
                 .build();
 
         if(userTickets.contains(ticketDTO)) throw  new InvalidOperationException(INVALID_TICKET_STATE_ALREADY_EXISTS);
