@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 public class BookMovieCommand {
@@ -22,5 +24,7 @@ public class BookMovieCommand {
     MovieSlot movieSlot;
 
     int numberOfSeats;
+
+    LocalDateTime date;
 
 }

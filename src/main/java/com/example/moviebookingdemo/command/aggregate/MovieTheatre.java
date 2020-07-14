@@ -101,6 +101,7 @@ public class MovieTheatre {
                         .movieName(command.getMovieName())
                         .movieSlot(command.getMovieSlot())
                         .numberOfSeats(command.getNumberOfSeats())
+                        .date(command.getDate())
                         .build()
         );
     }

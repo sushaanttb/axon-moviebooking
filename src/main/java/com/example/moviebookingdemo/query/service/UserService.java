@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.example.moviebookingdemo.coreapi.Constants.INVALID_TICKET_STATE_ALREADY_EXISTS;
 import static com.example.moviebookingdemo.coreapi.Constants.INVALID_USER;
@@ -49,7 +50,11 @@ public class UserService {
     }
 
     public List<TicketDTO> getAllTickets(String userId){
-        List<TicketDTO> tickets = getUser(userId).getTickets();
+        List<TicketDTO> tickets = getUser(userId).getTickets().stream()
+                //ToDo: backward compatibility check when date was not part of it
+                //remove it post clearing all aggregates
+                .filter(ticketDTO -> ticketDTO.getDate()!=null)
+                .collect(Collectors.toList());
 
         tickets.sort((ticket1,ticket2)->{
             if(ticket1.getDate().isBefore(ticket2.getDate())) return 1;

@@ -106,7 +106,7 @@ public class MovieTheatreService {
                                     .movieName(event.getMovieName())
                                     .movieSlot(event.getMovieSlot())
                                     .numOfSeatsBooked(event.getNumberOfSeats())
-                                    .date(LocalDateTime.now().withSecond(0).withNano(0))  //<--   To avoid aggregate illegal state exception
+                                    .date(event.getDate())
                                 .build();
 
         if(currentMovieBookings.contains(bookingDTO)) throw new InvalidOperationException(INVALID_BOOKING_STATE_ALREADY_EXISTS);
@@ -123,7 +123,7 @@ public class MovieTheatreService {
                                                 .movieName(event.getMovieName())
                                                 .movieSlot(event.getMovieSlot())
                                                 .numberOfSeats(event.getNumberOfSeats())
-                                                .date(bookingDTO.getDate())
+                                                .date(event.getDate())
                                             .build()
         );
     }

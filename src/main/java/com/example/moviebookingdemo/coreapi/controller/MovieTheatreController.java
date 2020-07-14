@@ -11,6 +11,7 @@ import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -70,6 +71,7 @@ public class MovieTheatreController {
                             .movieName(bookingDTO.getMovieName())
                             .movieSlot(bookingDTO.getMovieSlot())
                             .numberOfSeats(bookingDTO.getNumOfSeatsBooked())
+                            .date(LocalDateTime.now().withSecond(0).withNano(0))
                             .build()
         );
 
