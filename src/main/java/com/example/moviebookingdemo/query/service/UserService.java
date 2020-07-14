@@ -1,5 +1,6 @@
 package com.example.moviebookingdemo.query.service;
 
+import com.example.moviebookingdemo.command.aggregate.entity.Ticket;
 import com.example.moviebookingdemo.command.events.MovieBookedEvent;
 import com.example.moviebookingdemo.command.events.UserCreatedEvent;
 import com.example.moviebookingdemo.coreapi.dto.TicketDTO;
@@ -48,7 +49,14 @@ public class UserService {
     }
 
     public List<TicketDTO> getAllTickets(String userId){
-        return getUser(userId).getTickets();
+        List<TicketDTO> tickets = getUser(userId).getTickets();
+
+        tickets.sort((ticket1,ticket2)->{
+            if(ticket1.getDate().isBefore(ticket2.getDate())) return 1;
+            else if (ticket1.getDate().isAfter(ticket2.getDate())) return -1;
+            else return 0;
+        });
+        return tickets;
     }
 
     public UserDTO login(String userName, String password ){
